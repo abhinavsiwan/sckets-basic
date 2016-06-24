@@ -9,22 +9,26 @@ var now = moment();
 var clientInfo = {};
 app.use(express.static(__dirname + '/public'));
 
-//send current users to provided socket
-function sendCurrentUsers(socket) {
+// Sends current users to provided socket
+function sendCurrentUsers (socket) {
 	var info = clientInfo[socket.id];
 	var users = [];
 
-	Object.keys(clientInfo).forEach(function (socketID) {
-		var userInfo = clientInfo[socketID];
+	if (typeof info === 'undefined') {
+		return;
+	}
 
-		if(info.room === userInfo.room) {
+	Object.keys(clientInfo).forEach(function (socketId) {
+		var userInfo = clientInfo[socketId];
+
+		if (info.room === userInfo.room) {
 			users.push(userInfo.name);
 		}
 	});
 
 	socket.emit('message', {
 		name: 'System',
-		text: 'Current Users:' + users.join(', '),
+		text: 'Current users: ' + users.join(', '),
 		timestamp: now.valueOf()
 	});
 }
@@ -43,7 +47,7 @@ io.on('connection', function(socket) {
 				timestamp: now.valueOf()
 			});
 			//delete the client info
-			delete userData;
+			delete clientInfo[socket.id];
 		}
 	});
 
