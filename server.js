@@ -27,6 +27,7 @@ io.on('connection', function (socket) {
 	var unixTimeStamp = now.valueOf();
 	//send message to the client
 	socket.emit('message', {
+		name: 'System',
 		text: 'Welcome to the chat applcation!',
 		timestamp: unixTimeStamp
 	});
