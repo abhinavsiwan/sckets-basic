@@ -16,7 +16,8 @@ io.on('connection', function (socket) {
 
 		//io.emit() -> send the message to everyone including sender
 		//sends the message to everyone except the sender
-		socket.broadcast.emit('message', message);
+		//socket.broadcast.emit('message', message);
+		io.emit('message', message);
 	});
 
 	//send message to the client
