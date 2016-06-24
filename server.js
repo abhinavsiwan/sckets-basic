@@ -12,6 +12,21 @@ app.use(express.static(__dirname + '/public'));
 io.on('connection', function (socket) {
 	console.log('User conected via socket.io');
 
+	//code to leave or disconnect from private rooms
+	socket.on('disconnect', function () {
+		var userData = clientInfo[socket.id]
+		if(typeof userData !== 'undefined') {
+			socket.leave(userData.room);
+			io.to(userData.room).emit('message', {
+				name: 'System',
+				text: userData.name + ' has left the room',
+				timestamp: now.valueOf()
+			});
+			//delete the client info
+			delete userData;
+		}
+	});
+
 	//code to join private rooms
 	socket.on('joinRoom' , function (req) {
 		clientInfo[socket.id] = req;
@@ -22,6 +37,7 @@ io.on('connection', function (socket) {
 			timestamp: now.valueOf()
 		});
 	});
+
 	//make two browsers communicate to each other
 	//listen to messages from the client
 	socket.on('message', function (message) {
