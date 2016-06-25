@@ -22,12 +22,15 @@ socket.on('message', function (message) {
 	var timeStamp = message.timestamp;
 	var momentTimeStamp = moment.utc(timeStamp).local().format('h:mm a');
 
-	var $message = jQuery('.messages')
+	var $messages = jQuery('.messages');
+	var $message = jQuery('<li class="list-group-item"></li>');
+
 	console.log("New Message received from server");
 	console.log(message.text);
 
 	$message.append('<p><strong>' + message.name + ' ' + momentTimeStamp + '</strong></p>');
 	$message.append('<p>' +message.text + '</p>');
+	$messages.append($message);
 });
 
 //Handles submitting of new message
